@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafe Compute Indore · Claim your Codex Credit</title>
+  <link rel="icon" href="/images/landingpage_logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --ink: #f2f2f2;
+      --muted: #9a9a9e;
+      --line: #26262a;
+      --orange: #e85d2a;
+      --orange-hi: #ff7a42;
+      --green: #3ddc84;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      --sans: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      --pad: clamp(18px, 5vw, 94px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      /* the whole page fits in one screen: nav + title take their size, the rest fills what's left */
+      height: 100vh; height: 100dvh;
+      display: flex; flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto; /* only kicks in on extremely small screens */
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------------- nav ---------------- */
+    nav {
+      flex: none;
+      position: sticky; top: 0; z-index: 20;
+      height: 70px;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      padding: 0 calc(var(--pad) + 70px);
+      background: rgba(14, 14, 16, .86);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      animation: navIn .7s ease both;
+    }
+    .logo { display: flex; align-items: center; }
+    .logo img { height: 48px; width: auto; display: block; transition: transform .3s, filter .3s; }
+    .logo:hover img { transform: scale(1.04); filter: drop-shadow(0 0 12px rgba(240,90,40,.45)); }
+    .links { display: flex; gap: 26px; font-size: 17px; font-weight: 500; color: #b9b9bd; }
+    .links a { display: inline-flex; align-items: center; gap: 6px; transition: color .2s; }
+    .links a:hover { color: #fff; }
+    .links svg { width: 10px; height: 10px; opacity: .8; }
+    .nav-right { display: flex; justify-content: flex-end; gap: 12px; }
+    .btn-outline, .btn-solid {
+      height: 55px; padding: 0 24px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font: 600 17px var(--sans);
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .btn-outline { border: 1px solid #e8e8e8; color: #fff; font-family: var(--mono); font-size: 14px; letter-spacing: .08em; }
+    .btn-outline .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.6s infinite; }
+    .btn-solid { background: var(--orange); color: #fff; border: 1px solid var(--orange); }
+    .btn-solid:hover { background: var(--orange-hi); border-color: var(--orange-hi); }
+    @keyframes blink { 50% { opacity: .3; } }
+    @keyframes navIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+
+    /* ---------------- hero word ---------------- */
+    .hero-word {
+      flex: none;
+      padding: clamp(6px, 1.5vh, 12px) calc(var(--pad) + 30px) 0;
+      position: relative;
+    }
+    #word { display: block; width: 100%; cursor: crosshair; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+    /* ---------------- lower section ---------------- */
+    .lower {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 26px;
+      padding: clamp(12px, 4vh, 56px) var(--pad) clamp(12px, 3vh, 36px);
+      overflow: clip; /* the decorative glow must not push the page past one screen */
+    }
+    .left { display: flex; flex-direction: column; justify-content: center; gap: clamp(16px, 4vh, 44px); min-height: 0; }
+    h1 {
+      font-weight: 400;
+      font-size: clamp(24px, min(3vw, 5.2vh), 46px);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      max-width: 720px;
+    }
+    h1 .w { display: inline-block; opacity: 0; transform: translateY(18px); filter: blur(6px); animation: wordIn .7s cubic-bezier(.2,.8,.2,1) forwards; }
+    @keyframes wordIn { to { opacity: 1; transform: none; filter: none; } }
+
+    .field-label { font-family: var(--mono); font-size: 13px; letter-spacing: .22em; color: var(--muted); margin-bottom: 12px; display: block; max-width: 700px; }
+    form { display: flex; gap: 0; max-width: 700px; }
+    input[type=email] {
+      flex: 1; min-width: 0; height: clamp(46px, 6.5vh, 60px);
+      background: #141416; color: #fff;
+      border: 1px solid #333338; border-right: none;
+      padding: 0 20px;
+      font: 400 18px var(--sans);
+      outline: none;
+      transition: border-color .25s, background .25s, box-shadow .25s;
+    }
+    input[type=email]::placeholder { color: #66666c; }
+    input[type=email]:focus { border-color: var(--orange); background: #18120f; box-shadow: inset 0 0 0 1px var(--orange); }
+    .claim-btn {
+      height: clamp(46px, 6.5vh, 60px); padding: 0 34px;
+      background: var(--orange); color: #fff;
+      border: 1px solid var(--orange);
+      font: 500 18px var(--mono); letter-spacing: .14em;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 12px;
+      position: relative; overflow: hidden;
+      transition: background .2s;
+    }
+    .claim-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+      transform: translateX(-120%);
+      animation: sweep 3.2s ease-in-out 2s infinite;
+    }
+    @keyframes sweep { 0% { transform: translateX(-120%); } 40%, 100% { transform: translateX(120%); } }
+    .claim-btn:hover { background: var(--orange-hi); }
+    .claim-btn .arrow { transition: transform .25s; display: inline-block; }
+    .claim-btn:hover .arrow { transform: translate(3px, -3px); }
+    .claim-btn:disabled { cursor: wait; opacity: .75; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    .claim-btn.loading .spinner { display: block; }
+    .claim-btn.loading .arrow { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .result { display: none; max-width: 700px; margin-top: 16px; padding: 18px 20px; border: 1px solid var(--line); background: #131315; animation: pop .45s cubic-bezier(.2,.9,.3,1.25); }
+    .result.show { display: block; }
+    .result .tag { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; margin-bottom: 8px; }
+    .result.ok .tag { color: var(--green); }
+    .result.warn .tag { color: #ffb347; }
+    .result.err .tag { color: #ff6b6b; }
+    .result.ok { border-color: rgba(61,220,132,.35); }
+    .result.warn { border-color: rgba(255,179,71,.35); }
+    .result.err { border-color: rgba(255,107,107,.35); }
+    .result h3 { font-weight: 500; font-size: 20px; margin-bottom: 4px; }
+    .result p { color: #b5b5ba; font-size: 15px; line-height: 1.5; }
+    .link-row { display: flex; margin-top: 14px; }
+    .link-row code {
+      flex: 1; min-width: 0; padding: 12px 14px;
+      font: 13px var(--mono); color: #fff; overflow-wrap: anywhere;
+      background: #0b0b0c; border: 1px dashed #3a3a40; border-right: none;
+    }
+    .link-row button, .link-row a {
+      padding: 0 16px; font: 500 13px var(--mono); letter-spacing: .12em;
+      display: inline-flex; align-items: center; cursor: pointer;
+      border: 1px solid #3a3a40; background: #1a1a1d; color: #fff;
+      transition: background .2s;
+    }
+    .link-row button:hover { background: #26262a; }
+    .link-row a { background: var(--orange); border-color: var(--orange); }
+    .link-row a:hover { background: var(--orange-hi); }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+    .partner {
+      --logo-h: clamp(36px, 6.4vh, 62px);
+      margin-top: clamp(12px, 3vh, 28px); padding-top: clamp(8px, 2vh, 18px);
+      border-top: 1px solid #3a3a40;
+      max-width: 700px;
+    }
+    .partner-label { font-family: var(--mono); font-size: 13px; letter-spacing: .22em; color: var(--muted); }
+    /* animatable spotlight position so it can drift on its own */
+    @property --mx { syntax: '<length-percentage>'; inherits: false; initial-value: 50%; }
+    @property --my { syntax: '<length-percentage>'; inherits: false; initial-value: 50%; }
+    /* the "hover" look is the default: lifted, orange border + glow, spotlight, shimmer, EXPLORE hint */
+    .partner-card {
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; gap: clamp(14px, 2vw, 24px);
+      margin-top: 10px;
+      padding: clamp(8px, 1.6vh, 16px) clamp(14px, 1.6vw, 22px);
+      border: 1px solid rgba(232,93,42,.6);
+      background: #111113;
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px -14px rgba(232,93,42,.45);
+      animation: spotDrift 7s ease-in-out infinite alternate, cardGlow 3.5s ease-in-out infinite;
+      transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s, box-shadow .3s;
+      outline: none;
+    }
+    @keyframes spotDrift {
+      0%   { --mx: 8%;  --my: 30%; }
+      50%  { --mx: 55%; --my: 75%; }
+      100% { --mx: 95%; --my: 35%; }
+    }
+    @keyframes cardGlow {
+      0%, 100% { box-shadow: 0 14px 40px -14px rgba(232,93,42,.40); }
+      50%      { box-shadow: 0 16px 48px -12px rgba(232,93,42,.62); }
+    }
+    .partner-card::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(260px circle at var(--mx) var(--my), rgba(232,93,42,.24), transparent 60%);
+    }
+    /* on hover the spotlight follows the cursor (set from JS) and everything gets a little stronger */
+    .partner-card:hover, .partner-card:focus-visible {
+      animation: none;
+      transform: translateY(-5px);
+      border-color: rgba(255,122,66,.9);
+      box-shadow: 0 18px 50px -12px rgba(232,93,42,.6);
+    }
+    .partner-card > * { position: relative; }
+    .partner-card .brand-openai { display: flex; align-items: center; gap: calc(var(--logo-h) * .2); }
+    .partner-card .oa-icon {
+      height: var(--logo-h); width: var(--logo-h);
+      animation: spin 8s linear infinite;
+    }
+    .partner-card:hover .oa-icon { animation-duration: 2.4s; }
+    .partner-card .oa-word { height: calc(var(--logo-h) * .69); transform: translateY(calc(var(--logo-h) * .08)); }
+    .partner-card .divider { width: 1px; align-self: stretch; margin: 4px 0; background: linear-gradient(transparent, #4a4a50, transparent); }
+    .partner-card .codex {
+      font: 600 calc(var(--logo-h) * .8) / 1 var(--sans); letter-spacing: -0.02em;
+      background: linear-gradient(100deg, #fff 0%, #fff 40%, var(--orange-hi) 50%, #fff 60%, #fff 100%);
+      background-size: 250% 100%; background-position: 100% 0;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    @keyframes shimmer { 0% { background-position: 100% 0; } 60%, 100% { background-position: 0 0; } }
+    .partner-card .explore {
+      margin-left: auto;
+      font: 500 12px var(--mono); letter-spacing: .2em; color: var(--orange-hi);
+      white-space: nowrap;
+    }
+    .partner-card .explore i { display: inline-block; font-style: normal; animation: nudge 1.6s ease-in-out infinite; }
+    @keyframes nudge { 0%, 100% { transform: none; } 50% { transform: translate(3px, -3px); } }
+    .partner-card:active { transform: translateY(-1px) scale(.99); }
+    /* staggered entrance, then the looping effects */
+    .partner-card .brand-openai, .partner-card .divider, .partner-card .explore { animation: fadeUp .7s cubic-bezier(.2,.8,.2,1) both; }
+    .partner-card .brand-openai { animation-delay: 1.5s; }
+    .partner-card .divider { animation-delay: 1.65s; }
+    .partner-card .codex { animation: fadeUp .7s cubic-bezier(.2,.8,.2,1) 1.8s both, shimmer 3.2s ease-in-out 2.6s infinite; }
+    .partner-card .explore { animation-delay: 1.95s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+    /* ---------------- right showcase: Cerebras system ---------------- */
+    .showcase {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; min-height: 0;
+      perspective: 1200px;
+      animation: showIn 1.2s .35s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes showIn { from { opacity: 0; transform: translateX(60px); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
+    /* pulsing orange glow behind the racks */
+    .showcase .glow {
+      position: absolute; left: 50%; top: 48%;
+      width: 78%; aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(232,93,42,.42) 0%, rgba(232,93,42,.14) 38%, transparent 68%);
+      filter: blur(10px);
+      animation: glow 4.5s ease-in-out infinite;
+      transition: background .6s;
+    }
+    @keyframes glow { 0%, 100% { opacity: .65; transform: translate(-50%, -50%) scale(.94); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } }
+    /* floor shadow that breathes with the float */
+    .showcase .floor {
+      position: absolute; left: 50%; bottom: 4%;
+      width: 62%; height: 26px; transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(0,0,0,.85), transparent 70%);
+      animation: floor 6s ease-in-out infinite;
+    }
+    @keyframes floor { 0%, 100% { transform: translateX(-50%) scaleX(1); opacity: .9; } 50% { transform: translateX(-50%) scaleX(.86); opacity: .6; } }
+    .rack {
+      position: relative;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .25s ease-out;
+    }
+    .rack .float { height: 100%; animation: float 6s ease-in-out infinite; position: relative; }
+    .rack img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(0,0,0,.6)); }
+    /* light sweep clipped to the racks' own shape */
+    .rack .sweep {
+      position: absolute; inset: 0;
+      -webkit-mask: url('/images/cerebras.avif') center / contain no-repeat;
+              mask: url('/images/cerebras.avif') center / contain no-repeat;
+      background: linear-gradient(180deg, transparent 0%, transparent 42%, rgba(255,150,100,.35) 49%, rgba(255,255,255,.55) 50%, rgba(255,150,100,.35) 51%, transparent 58%, transparent 100%);
+      background-size: 100% 300%;
+      animation: scanY 4.2s ease-in-out 1.6s infinite;
+      mix-blend-mode: screen;
+    }
+    @keyframes scanY { 0% { background-position: 0 100%; } 60%, 100% { background-position: 0 0%; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    /* react to claim results */
+    .showcase.ok .glow   { background: radial-gradient(circle, rgba(61,220,132,.38) 0%, rgba(61,220,132,.12) 38%, transparent 68%); }
+    .showcase.warn .glow { background: radial-gradient(circle, rgba(255,179,71,.40) 0%, rgba(255,179,71,.12) 38%, transparent 68%); }
+    .showcase.err .glow  { background: radial-gradient(circle, rgba(255,90,90,.40) 0%, rgba(255,90,90,.12) 38%, transparent 68%); }
+
+    /* confetti */
+    .confetti { position: fixed; top: -12px; width: 8px; height: 8px; z-index: 50; pointer-events: none; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(105vh) rotate(540deg); } }
+
+    /* ---------------- responsive ---------------- */
+    @media (max-width: 1100px) {
+      nav { padding: 0 var(--pad); }
+      .links { display: none; }
+      nav { grid-template-columns: 1fr auto; }
+    }
+    @media (max-width: 900px) {
+      /* mobile: a normal scrolling page — image first, then the claim form */
+      body { height: auto; min-height: 100vh; min-height: 100dvh; overflow-y: visible; }
+      .lower { flex: none; display: flex; flex-direction: column; gap: 24px; overflow-x: clip; overflow-y: visible; padding-bottom: 40px; }
+      .showcase { order: -1; flex: none; height: min(440px, 95vw); }
+      .left { flex: none; justify-content: flex-start; gap: 24px; }
+      .hero-word { padding: 12px var(--pad) 0; }
+    }
+    @media (max-width: 560px) {
+      .btn-outline { display: none; }
+      .btn-solid { height: 44px; padding: 0 16px; font-size: 15px; }
+      .logo img { height: 30px; }
+      form { flex-direction: column; }
+      input[type=email] { flex: none; border-right: 1px solid #333338; }
+      .claim-btn { height: 56px; }
+      .claim-btn { justify-content: center; }
+      .partner-card .explore { display: none; }
+      /* the logo row is ~6.2x the logo height wide; size it from the screen width so "Codex" never gets cut off */
+      .partner { --logo-h: min(clamp(30px, 6.4vh, 50px), calc((100vw - 2 * var(--pad) - 64px) / 6.2)); }
+      .partner-card { justify-content: center; gap: 12px; padding-left: 14px; padding-right: 14px; }
+      .link-row { flex-wrap: wrap; }
+      .link-row code { flex-basis: 100%; border-right: 1px dashed #3a3a40; }
+      .link-row button, .link-row a { flex: 1; justify-content: center; height: 42px; }
+    }
+    /* desktop only: on short screens drop the partner row while a result is showing, so it stays one screen */
+    @media (max-height: 820px) and (min-width: 901px) {
+      .left:has(.result.show) .partner { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="logo" href="/" aria-label="Cerebras"><img src="/images/cerebraslogo_dark.png" alt="Cerebras" /></a>
+    <div class="links">
+      <a href="#claim">Event <svg viewBox="0 0 10 10"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      <a href="https://www.cerebras.ai" target="_blank" rel="noopener">Cerebras <svg viewBox="0 0 10 10"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      <a href="https://developers.openai.com/codex" target="_blank" rel="noopener">Codex <svg viewBox="0 0 10 10"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      <a href="https://developers.openai.com/codex" target="_blank" rel="noopener">Docs</a>
+      <a href="#claim">About</a>
+    </div>
+    <div class="nav-right">
+      <span class="btn-outline"><span class="dot"></span>18·10·2026</span>
+      <a class="btn-solid" href="#claim" id="nav-claim">Claim Credit</a>
+    </div>
+  </nav>
+
+  <section class="hero-word">
+    <h2 class="sr-only">Cafe Compute</h2>
+    <canvas id="word" aria-hidden="true"></canvas>
+  </section>
+
+  <section class="lower">
+    <div class="left">
+      <h1 id="headline">Build agents that act. Stay in control while they do.</h1>
+
+      <div id="claim">
+        <label class="field-label" for="email">ENTER YOUR CHECK-IN EMAIL</label>
+        <form id="claim-form" novalidate>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+          <button type="submit" class="claim-btn" id="submit"><span class="spinner"></span>CLAIM <span class="arrow">↗</span></button>
+        </form>
+        <div class="result" id="result" role="status" aria-live="polite"></div>
+
+        <div class="partner">
+          <span class="partner-label">IN PARTNERSHIP WITH</span>
+          <a class="partner-card" id="partner-card" href="https://developers.openai.com/codex" target="_blank" rel="noopener" aria-label="OpenAI Codex — opens in a new tab">
+            <span class="brand-openai">
+              <img class="oa-icon" src="/images/openai_icon_white.png" alt="" />
+              <img class="oa-word" src="/images/openai_word_white.png" alt="OpenAI" />
+            </span>
+            <span class="divider"></span>
+            <b class="codex">Codex</b>
+            <span class="explore">EXPLORE <i>↗</i></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase" id="showcase" aria-hidden="true">
+      <div class="glow"></div>
+      <div class="floor"></div>
+      <div class="rack" id="rack">
+        <div class="float">
+          <img src="/images/cerebras.avif" alt="" />
+          <div class="sweep"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /* ================= headline word-by-word reveal ================= */
+    (() => {
+      const h = document.getElementById('headline');
+      h.innerHTML = h.textContent.split(' ')
+        .map((w, i) => `<span class="w" style="animation-delay:${0.9 + i * 0.07}s">${w}</span>`)
+        .join(' ');
+    })();
+
+    /* ================= "Cafe Compute" pixel-dither hero ================= */
+    (() => {
+      const TEXT = 'Cafe Compute';
+      const canvas = document.getElementById('word');
+      const ctx = canvas.getContext('2d');
+      const mask = document.createElement('canvas');
+      const mctx = mask.getContext('2d');
+      const low = document.createElement('canvas');
+      const lctx = low.getContext('2d');
+      const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + 0.5) / 16);
+      const COLORS = [[132, 49, 18], [196, 78, 30], [255, 136, 80], [255, 196, 170]];
+      let W, H, dpr, cell, cols, rows, img, seeds, start = performance.now();
+      let pointer = { x: -1e4, y: -1e4, a: 0 };
+
+      function layout() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth;
+        mctx.font = `600 100px Outfit, sans-serif`;
+        const m = mctx.measureText(TEXT);
+        // fill the width; on desktop never take more than ~22% of the screen height (so it fits without scrolling)
+        const maxH = innerWidth <= 900 ? Infinity : innerHeight * 0.22; // mobile scrolls, so just fit the width
+        const size = Math.min((100 * W) / m.width, maxH / 0.84);
+        const textX = (W - (m.width * size) / 100) / 2;
+        H = Math.ceil(size * 0.84);
+        canvas.style.height = H + 'px';
+        canvas.width = mask.width = W * dpr;
+        canvas.height = mask.height = H * dpr;
+
+        mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        mctx.clearRect(0, 0, W, H);
+        mctx.fillStyle = '#fff';
+        mctx.textBaseline = 'alphabetic';
+        mctx.font = `600 ${size}px Outfit, sans-serif`;
+        mctx.fillText(TEXT, textX, size * 0.76);
+
+        cell = Math.max(4, Math.round(W / 280));
+        cols = Math.ceil(W / cell); rows = Math.ceil(H / cell);
+        low.width = cols; low.height = rows;
+        img = lctx.createImageData(cols, rows);
+        seeds = Float32Array.from({ length: cols * rows }, () => Math.random());
+      }
+
+      function field(u, v, t) {
+        // layered travelling waves -> slow "flow" of light across the letters
+        let f = 0.42
+          + 0.22 * Math.sin(u * 7.0 + t * 0.55 + Math.sin(v * 3.0 + t * 0.4) * 1.6)
+          + 0.18 * Math.sin(v * 6.5 - t * 0.7 + u * 4.0)
+          + 0.14 * Math.sin((u - v) * 11.0 + t * 0.9);
+        // warm highlight drifting over the right side
+        const hx = 0.88 + 0.06 * Math.sin(t * 0.3), hy = 0.25;
+        f += 0.55 * Math.exp(-((u - hx) ** 2 * 40 + (v - hy) ** 2 * 6));
+        return f;
+      }
+
+      function frame(now) {
+        const t = (now - start) / 1000;
+        const d = img.data;
+        const px = pointer.x / W, py = pointer.y / H;
+        pointer.a += ((pointer.x > -1e3 ? 1 : 0) - pointer.a) * 0.08;
+
+        for (let j = 0; j < rows; j++) {
+          const v = j / rows;
+          for (let i = 0; i < cols; i++) {
+            const u = i / cols;
+            const k = j * cols + i;
+            let f = field(u, v, t);
+            if (pointer.a > 0.01) {
+              const dx = (u - px) * (W / H), dy = v - py;
+              f += 0.9 * pointer.a * Math.exp(-(dx * dx + dy * dy) * 18);
+            }
+            // pixel-scramble intro: cells switch on left -> right
+            const reveal = (t - 0.15 - u * 0.9) / 0.5;
+            const on = seeds[k] < reveal;
+            // narrow dither amplitude -> solid colour zones with dithered transitions between them
+            const level = Math.min(COLORS.length - 1, Math.max(0, Math.floor(f * 2.6 + (BAYER[(j & 3) * 4 + (i & 3)] - 0.5) * 0.9)));
+            const c = COLORS[level];
+            const o = k * 4;
+            d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = on ? 255 : 0;
+          }
+        }
+        lctx.putImageData(img, 0, 0);
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(low, 0, 0, cols * cell * dpr, rows * cell * dpr);
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(mask, 0, 0);
+        requestAnimationFrame(frame);
+      }
+
+      canvas.addEventListener('pointermove', (e) => {
+        const r = canvas.getBoundingClientRect();
+        pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
+      });
+      canvas.addEventListener('pointerleave', () => { pointer.x = pointer.y = -1e4; });
+
+      document.fonts.load('600 100px Outfit').finally(() => {
+        layout();
+        start = performance.now();
+        requestAnimationFrame(frame);
+        let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
+      });
+    })();
+
+    /* ================= Cerebras showcase: mouse tilt + result reaction ================= */
+    const showcase = (() => {
+      const el = document.getElementById('showcase');
+      const rack = document.getElementById('rack');
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        rack.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 8}deg)`;
+      });
+      el.addEventListener('pointerleave', () => { rack.style.transform = ''; });
+      let timer;
+      return {
+        react(kind) {
+          clearTimeout(timer);
+          el.classList.remove('ok', 'warn', 'err');
+          el.classList.add(kind);
+          timer = setTimeout(() => el.classList.remove(kind), 5000);
+        },
+      };
+    })();
+
+    /* ================= partner card spotlight ================= */
+    (() => {
+      const card = document.getElementById('partner-card');
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        card.style.setProperty('--my', `${e.clientY - r.top}px`);
+      });
+    })();
+
+    /* ================= claim logic ================= */
+    const form = document.getElementById('claim-form');
+    const input = document.getElementById('email');
+    const btn = document.getElementById('submit');
+    const result = document.getElementById('result');
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    document.getElementById('nav-claim').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('claim').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => input.focus({ preventScroll: true }), 500);
+    });
+
+    function show(kind, tag, title, body, link) {
+      result.className = 'result';
+      void result.offsetWidth; // restart pop animation
+      result.className = `result show ${kind}`;
+      // on phones the result can land below the fold — bring it into view
+      if (innerWidth <= 900) setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      result.innerHTML = `<div class="tag">${tag}</div><h3>${title}</h3><p>${body}</p>` + (link ? `
+        <div class="link-row">
+          <code id="link">${esc(link)}</code>
+          <button type="button" id="copy">COPY</button>
+          <a href="${esc(link)}" target="_blank" rel="noopener noreferrer">OPEN ↗</a>
+        </div>` : '');
+      if (link) {
+        const copy = document.getElementById('copy');
+        copy.addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(link); }
+          catch { const r = document.createRange(); r.selectNode(document.getElementById('link')); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand('copy'); }
+          copy.textContent = 'COPIED ✓';
+          setTimeout(() => (copy.textContent = 'COPY'), 1800);
+        });
+      }
+    }
+
+    function confetti() {
+      const colors = ['#e85d2a', '#ff8a50', '#ffc4aa', '#3ddc84', '#ffffff'];
+      for (let i = 0; i < 80; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = 1.8 + Math.random() * 1.8 + 's';
+        c.style.animationDelay = Math.random() * 0.4 + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4200);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim().toLowerCase();
+      if (!EMAIL_RE.test(email)) {
+        show('err', 'INVALID', 'Enter a valid email', 'Please check the email address and try again.');
+        showcase.react('err');
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true; btn.classList.add('loading');
+      try {
+        const res = await fetch('/api/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        switch (data.status) {
+          case 'claimed':
+            show('ok', 'ALLOW · CREDIT ASSIGNED', "You're in — here's your Codex credit", `This link is reserved only for <b>${esc(email)}</b>. Save it now.`, data.link);
+            showcase.react('ok');
+            confetti();
+            break;
+          case 'already_claimed':
+            show('ok', 'ALLOW · ALREADY CLAIMED', 'Welcome back', `You claimed this credit on ${new Date(data.claimedAt).toLocaleString()}. Here is the same link again.`, data.link);
+            showcase.react('ok');
+            break;
+          case 'not_checked_in':
+            show('warn', 'DENY · NOT CHECKED IN', 'Email not found', `<b>${esc(email)}</b> isn't on the check-in list. Double-check the spelling, or visit the help desk to check in first.`);
+            showcase.react('warn');
+            break;
+          case 'not_checked_in_yet':
+            show('warn', 'DENY · CHECK-IN REQUIRED', "You haven't checked in yet", `<b>${esc(email)}</b> is registered, but hasn't checked in at the venue. Check in at the desk first, then come back to claim your credit.`);
+            showcase.react('warn');
+            break;
+          case 'exhausted':
+            show('err', 'DENY · POOL EMPTY', 'All credits have been claimed', 'Every Codex credit link has been distributed. Please reach out to the organisers.');
+            showcase.react('err');
+            break;
+          case 'rate_limited':
+            show('err', 'THROTTLED', 'Too many attempts', 'Please wait a minute and try again.');
+            break;
+          case 'invalid_email':
+            show('err', 'INVALID', 'Enter a valid email', 'Please check the email address and try again.');
+            break;
+          default:
+            show('err', 'ERROR', 'Something went wrong', 'Please try again.');
+        }
+      } catch {
+        show('err', 'OFFLINE', 'Connection problem', 'Could not reach the server. Check your internet and try again.');
+      } finally {
+        btn.disabled = false; btn.classList.remove('loading');
+      }
+    });
+
+  </script>
+</body>
+</html>
